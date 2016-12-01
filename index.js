@@ -1,3 +1,6 @@
+const path = require('path')
+const fs = require('fs')
+const os = require('os')
 const SECRETS_DIR = path.join(os.homedir(), '.secrets')
 const ENV = process.env
 const PKG_NAME = loadPackage().name

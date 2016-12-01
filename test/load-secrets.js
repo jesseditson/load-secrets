@@ -30,3 +30,9 @@ test('it overrides file vars with env vars', t => {
   let s = loadSecrets('some-project', {'SOME-PROJECT_FOO': 'IT WORKED'}, path.join(__dirname, 'fixtures'))
   t.equal(s.FOO, 'IT WORKED')
 })
+
+test('it overrides file vars with non-prefixed env vars', t => {
+  t.plan(1)
+  let s = loadSecrets('some-project', {'FOO': 'LOOK MA, NO PREFIX'}, path.join(__dirname, 'fixtures'))
+  t.equal(s.FOO, 'LOOK MA, NO PREFIX')
+})
