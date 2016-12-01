@@ -1,0 +1,28 @@
+{
+  "name": "load-secrets",
+  "version": "0.1.0",
+  "description": "load secrets from your home dir or from the env",
+  "main": "index.js",
+  "scripts": {
+    "test": "nyc tape test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jesseditson/load-secrets.git"
+  },
+  "keywords": [
+    "secrets",
+    "env"
+  ],
+  "author": "Jesse Ditson <jesse.ditson@gmail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/jesseditson/load-secrets/issues"
+  },
+  "homepage": "https://github.com/jesseditson/load-secrets#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "nyc": "^10.0.0",
+    "tape": "^4.6.3"
+  }
+}
