@@ -23,3 +23,10 @@ test('it loads & parses secrets from a file', t => {
   t.equal(s.TRICKY, 'ricky "the frick" frickleson', 'it handles escaped quotes')
   t.equal(s.EMPTY, '', 'loads empty vars as empty strings')
 })
+
+
+test('it overrides file vars with env vars', t => {
+  t.plan(1)
+  let s = loadSecrets('some-project', {'SOME-PROJECT_FOO': 'IT WORKED'}, path.join(__dirname, 'fixtures'))
+  t.equal(s.FOO, 'IT WORKED')
+})

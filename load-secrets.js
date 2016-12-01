@@ -8,7 +8,7 @@ const VALID_LINE = /^\s*.+=/
 module.exports = function loadSecrets(name, env, dir) {
   var secretsFile = findFile(dir, name)
 
-  var secrets = getEnv(env, name)
+  var secrets = {}
   if (secretsFile && fs.existsSync(secretsFile)) {
     var str = fs.readFileSync(secretsFile, 'utf8')
     var lines = str.split(/\r?\n/)
@@ -19,7 +19,7 @@ module.exports = function loadSecrets(name, env, dir) {
       }
     })
   }
-  return secrets;
+  return overlayEnv(env, name, secrets)
 }
 
 function findFile(dir, name) {
@@ -33,8 +33,7 @@ function findFile(dir, name) {
   }
 }
 
-function getEnv(env, name) {
-  var out = {}
+function overlayEnv(env, name, out) {
   var pattern = new RegExp('^' + name + '[_-]', 'i')
   // get secrets with name prefix from the env
   Object.keys(env).forEach(function(key) {

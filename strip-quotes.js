@@ -8,6 +8,8 @@ module.exports = function(str) {
     var m = str.match(pattern)
     // handle escaped quotes
     str = str.replace(pattern, q)
+  } else {
+    str = str.replace(/#.+/, '').trim()
   }
   return str
 }
