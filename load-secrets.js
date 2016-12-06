@@ -23,6 +23,7 @@ module.exports = function loadSecrets(name, env, dir) {
 }
 
 function findFile(dir, name) {
+  if (!fs.existsSync(dir)) return null;
   var pattern = new RegExp('^' + name + '$', 'i')
   var files = fs.readdirSync(dir)
   for (var idx in files) {
