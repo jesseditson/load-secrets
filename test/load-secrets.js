@@ -27,7 +27,7 @@ test('it loads & parses secrets from a file', t => {
 
 test('it overrides file vars with env vars', t => {
   t.plan(1)
-  let s = loadSecrets('some-project', {'SOME-PROJECT_FOO': 'IT WORKED'}, path.join(__dirname, 'fixtures'))
+  let s = loadSecrets('some-project', {'SOME_PROJECT_FOO': 'IT WORKED'}, path.join(__dirname, 'fixtures'))
   t.equal(s.FOO, 'IT WORKED')
 })
 

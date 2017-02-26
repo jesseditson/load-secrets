@@ -23,7 +23,7 @@ module.exports = function loadSecrets(name, env, dir) {
 }
 
 function findFile(dir, name) {
-  if (!fs.existsSync(dir)) return null;
+  if (!fs.existsSync(dir)) return null
   var pattern = new RegExp('^' + name + '$', 'i')
   var files = fs.readdirSync(dir)
   for (var idx in files) {
@@ -35,7 +35,8 @@ function findFile(dir, name) {
 }
 
 function overlayEnv(env, name, out) {
-  var pattern = new RegExp('^' + name + '[_-]', 'i')
+  var prefix = name.replace(/[^\w]/g, '_')
+  var pattern = new RegExp('^' + prefix + '_', 'i')
   // allow overriding anything in the env file without a prefix
   Object.keys(out).forEach(function(key) {
     if (env[key]) {

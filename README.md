@@ -44,6 +44,10 @@ console.log(secrets.SECRET) // prints 'I like the smell of gasoline 🙃'
 ```
 Project name is case insensitive, but case is retained on your vars, so `project_sEcreTs` is the same as `PROJECT_sEcreTs`, and both will produce `require('load-secrets').sEcreTs`
 
+Project name is also sanitized for bash variable name compatibility - so any special characters in your project name will be replaced with underscores in the prefix name.
+
+> Example: if your project name is "my-project", the env var prefix would be `MY_PROJECT`.
+
 You do not need to prefix files in your `<project>.env` file, so the above in a file would be:
 
 ```
@@ -55,3 +59,5 @@ Secrets in the env will override secrets in your files, so if you need to test s
 ```
 SECRET=foo node myprogram.js # SECRET is 'foo' regardless of what's in the env file
 ```
+
+> NOTE: this only works for secrets that are defined in your secrets file - so you can't set arbitrary secrets this way, and if you don't have an env file, you still must prefix secrets with your project name.
