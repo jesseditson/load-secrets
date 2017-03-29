@@ -1,24 +1,16 @@
-const path = require('path')
-const fs = require('fs')
-const os = require('os')
-const SECRETS_DIR = path.join(os.homedir(), '.secrets')
+// Detect if we're in node.js and attempt to load files.
+// if we're not, only load from process.env
+// this is useful when using things like https://webpack.js.org/plugins/environment-plugin/ that polyfill process.env on the client.
 const ENV = process.env
-const PKG_NAME = loadPackage().name
-
-module.exports = require('./load-secrets')(PKG_NAME, ENV, SECRETS_DIR)
-
-/**
- * loadPackage
- * same as require(process.cwd() + 'package.json'), except it throws a nicer error when it doesn't exist.
- * @return {Object} parsed package.json
- */
-function loadPackage() {
-  var pkg
-  try {
-    pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json')), 'utf8')
-  } catch (e) {
-    console.error('ERROR: failed reading package.json from directory ' + process.cwd() + '. Please make sure package.json exists and is valid JSON.')
-    throw e
-  }
-  return pkg
+const NODE_AVAILABLE = typeof module !== 'undefined' && module.exports && !process.browser
+if (NODE_AVAILABLE) {
+  const path = require('path')
+  const os = require('os')
+  SECRETS_DIR = path.join(os.homedir(), '.secrets')
+  PKG_NAME = require('./load-package')().name
+  module.exports = require('./load-secrets')(PKG_NAME, ENV, SECRETS_DIR)
+} else {
+  PKG_NAME = ENV.PKG_NAME
+  if (!PKG_NAME) throw new Error('ERROR: failed to load secrets. You must define process.env.PKG_NAME when using load-secrets in the browser.')
+  module.exports = require('./overlay-env')(ENV, PKG_NAME)
 }

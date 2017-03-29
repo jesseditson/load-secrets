@@ -4,13 +4,13 @@ Platform agnostic secrets loader for `~/.secrets/project-name.env` or `process.e
 ### Usage
 ---
 
-```
+```javascript
 const secrets = require('load-secrets')
 ```
 
 To load secrets from a file, add a file called `<your-project-name>.env` to the `~/.secrets` folder, e.g.
 
-```
+```shell
 mkdir -p ~/.secrets
 touch ~/.secrets/package-name.env
 ```
@@ -20,7 +20,7 @@ The env file name must (case insensitively) match your project name in `package.
 In the env file, each new line will be parsed as a variable.
 
 You may use quotes or omit them, if you omit them the output will be stripped:
-```
+```shell
 FOO=     W H O A    
 > "W H O A"
 FOO='     W H O A    '
@@ -33,11 +33,11 @@ FOO='comments are preserved in #quotes'
 
 To load secrets from the environment, make sure your secrets are prefixed with your project name, e.g.
 
-```
+```shell
 export PROJECT_SECRET='I like the smell of gasoline 🙃'
 ```
 is used via:
-```
+```javascript
 // package.json name is "project"
 const secrets = require('load-secrets')
 console.log(secrets.SECRET) // prints 'I like the smell of gasoline 🙃'
@@ -50,14 +50,32 @@ Project name is also sanitized for bash variable name compatibility - so any spe
 
 You do not need to prefix files in your `<project>.env` file, so the above in a file would be:
 
-```
+```shell
 SECRET=I like the smell of gasoline 🙃
 ```
 
 Secrets in the env will override secrets in your files, so if you need to test something quickly, just set it:
 
-```
+```shell
 SECRET=foo node myprogram.js # SECRET is 'foo' regardless of what's in the env file
 ```
 
 > NOTE: this only works for secrets that are defined in your secrets file - so you can't set arbitrary secrets this way, and if you don't have an env file, you still must prefix secrets with your project name.
+
+### Client-side Usage
+---
+
+This package will fall back to only using `process.env` and not attempting to load from `~/.secrets` when used on the client. This means that you must define `process.env.<PROJECT_NAME_SECRET_NAME>` in the global namespace of your client side bundle.
+
+This is usually achieved by using something like https://webpack.js.org/plugins/environment-plugin/, which will automatically handle defining `process.env` for you, and having it fall back to an env from `load-secrets`.
+
+```javascript
+const webpack = require('webpack')
+const secrets = require('load-secrets')
+
+const envPlugin = new webpack.EnvironmentPlugin({
+  MY_PROJECT_MY_SECERT: secrets.MY_SECRET
+})
+```
+
+This allows for isomorphic builds of applications that use this library, and use of `~/.secrets` when developing locally without checking in dev configs.
