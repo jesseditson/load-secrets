@@ -22,13 +22,17 @@ module.exports = function loadSecrets(name, env, dir) {
   return overlayEnv(env, name, secrets)
 }
 
-function findFile(dir, name) {
+function findFile(dir, name, prefix) {
+  prefix = prefix || ''
   if (!fs.existsSync(dir)) return null
   var pattern = new RegExp('^' + name + '$', 'i')
   var files = fs.readdirSync(dir)
   for (var idx in files) {
     var f = files[idx]
-    if (pattern.test(path.basename(f, path.extname(f)))) {
+    if (fs.lstatSync(path.join(dir, f)).isDirectory()) {
+      var found = findFile(path.join(dir, f), name, f + '/')
+      if (found) return found
+    } else if (pattern.test(prefix + path.basename(f, path.extname(f)))) {
       return path.join(dir, f)
     }
   }
