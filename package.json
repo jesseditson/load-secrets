@@ -1,6 +1,6 @@
 {
   "name": "load-secrets",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "load secrets from your home dir or from the env",
   "main": "index.js",
   "scripts": {
