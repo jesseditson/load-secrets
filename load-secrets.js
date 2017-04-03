@@ -2,7 +2,6 @@ const fs = require('fs')
 const path = require('path')
 const os = require('os')
 const stripQuotes = require('./strip-quotes')
-const overlayEnv = require('./overlay-env')
 
 const VALID_LINE = /^\s*.+=/
 
@@ -33,4 +32,22 @@ function findFile(dir, name) {
       return path.join(dir, f)
     }
   }
+}
+
+function overlayEnv(env, name, out) {
+  var prefix = name.replace(/[^\w]/g, '_')
+  var pattern = new RegExp('^' + prefix + '_', 'i')
+  // allow overriding anything in the env file without a prefix
+  Object.keys(out).forEach(function(key) {
+    if (env[key]) {
+      out[key] = env[key]
+    }
+  })
+  // get secrets with name prefix from the env
+  Object.keys(env).forEach(function(key) {
+    if (pattern.test(key)) {
+      out[key.replace(pattern, '')] = env[key]
+    }
+  })
+  return out
 }
